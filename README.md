@@ -1,2 +1,2 @@
 # Reach_Optimization
-Optimizing the reach of advertizements using Genetic Algorithm
+Optimizing the reach of advertisements using Genetic Algorithm
