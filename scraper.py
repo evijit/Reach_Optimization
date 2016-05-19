@@ -23,7 +23,7 @@ G=nx.Graph()
 browser = RoboBrowser(history=True,parser="html.parser")
 driver = webdriver.Chrome()
 visited=[]
-maxnodes=20
+maxnodes=300
 
 
 def login():
@@ -72,11 +72,11 @@ def siteinfo(siteurl):
 	incomediv=soup.find("div", {"class": "row-fluid col-pad pybar demo-income"})
 	ig=incomediv.find_all('span',{"class":'pybar-bars'})
 
+	incperlist=[]
 	for bar in ig:
 		barlist=bar.find_all('span',{"class":''})
 		if barlist:
 			c = 0
-			incperlist=[]
 			for b in barlist:
 				c=c+ int(filter(str.isdigit, str(b['style'])))
 			print c
@@ -87,17 +87,17 @@ def siteinfo(siteurl):
 	agediv=soup.find("div", {"class": "row-fluid col-pad pybar demo-age"})
 	ag=agediv.find_all('span',{"class":'pybar-bars'})
 
+	ageperlist=[]
 	for bar in ag:
 		barlist=bar.find_all('span',{"class":''})
 		if barlist:
 			c = 0
-			ageperlist=[]
 			for b in barlist:
 				c=c+ int(filter(str.isdigit, str(b['style'])))
 			print c
 			ageperlist.append(c)
 
-
+	print incperlist, ageperlist
 
 	print "Reach numbers"
 
