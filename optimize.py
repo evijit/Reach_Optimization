@@ -79,7 +79,7 @@ def fitness(S):
 # 	max_path = max((path for path in nx.all_simple_paths(G, source, dest)), key=lambda path: get_weight_product(path))
 # 	return max_path
 
-def weighted_choice_node(choices):
+def weighted_choice(choices):
    total = sum(w for c, w in choices)
    r = uniform(0, total)
    upto = 0
@@ -124,7 +124,7 @@ def population_generate_weighted(P,size):
 	while (i<P):
 		chromosome=[]
 		while (True):
-			gene = weighted_choice_node(choices)#random node
+			gene = weighted_choice(choices)#random node
 			# print G.node[gene]['reach']
 			if gene not in chromosome:
 				chromosome.append(gene)
@@ -140,6 +140,22 @@ def population_generate_weighted(P,size):
 		print p
 	return population
 
+def pickparents(population):
+	parents=[]
+	choices=[]
+	sortedpopulation=sorted(population, key= lambda ch: fitness(ch)) 
+	for ch in sortedpopulation:
+		choices.append((ch,fitness(ch)))
+
+	i=0
+	while(i<2):
+		p=weighted_choice(choices)
+		if p not in parents:
+			parents.append(p)
+			i=i+1
+	return parents
+
+
 
 def main():
 	
@@ -152,10 +168,8 @@ def main():
 	print '\n\nWeighted\n\n'
 	pop = population_generate_weighted(10,5)
 
-	print F.get(pop[0][0]).get(pop[1][0])
-
-	for p in pop:
-		print fitness(p)
+	print pickparents(pop)
+	
 
 	
 
