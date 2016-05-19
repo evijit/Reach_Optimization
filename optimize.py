@@ -5,6 +5,7 @@ from random import choice,uniform,randint
 import http_server
 import json
 import math
+from itertools import combinations
 import matplotlib.pyplot as plt
 
 
@@ -30,12 +31,15 @@ def remove_isolated(G):
 G = pickle.load(open('saved/graph300.txt'))
 
 for u,v,attr in G.edges(data=True):
-	G.edge[u][v]['neglog']= -1*math.log(G.edge[u][v]['weight']) 
+	G.edge[u][v]['neglog']= -1*math.log10(G.edge[u][v]['weight']) 
 
 prune(G)
 remove_isolated(G)
 
 F=nx.floyd_warshall(G, weight='neglog')
+# F=P[0]
+
+# print P
 
 
 
@@ -55,12 +59,33 @@ def fitness(S):
 	L=len(S)
 	outsum=0
 	for i in range(1,L):
-		insum=0
+		allpaths=[]
 		for j in range(i+1,L):
-			insum+= D(S[i],S[j])* min(U(S[i]),U(S[j]))
+			path=nx.shortest_path(G, source=S[i], target=S[j], weight='neglog')
+			allpaths.append(path)
+		
+		delpaths=[]
+		# print "All", allpaths
+		
+		for a, b in combinations(allpaths, 2):
+			str1 = ''.join(a)
+			str2 = ''.join(b)
+			if str1 in str2:
+				delpaths.append(b)
+			elif str2 in str1:
+				delpaths.append(a)
+
+		for d in delpaths:
+			allpaths.remove(d)
+
+		# print "Del", delpaths
+
+		insum=0
+		for p in allpaths:
+			l=len(p)
+			insum+= D(p[0],p[l-1])* min(U(p[0]),U(p[l-1]))
 		outsum+=U(S[i])-insum
 	return outsum
-
 
 
 # def get_weight_product(path):
@@ -70,9 +95,9 @@ def fitness(S):
 #         for i in range(len(path) - 1):
 #             u = path[i]
 #             v = path[i + 1]
-            
+			
 #             prod *= G.edge[u][v].get(weight, 1)
-    
+	
 #     return prod  
 
 
@@ -91,7 +116,7 @@ def weighted_choice(choices):
    assert False, "Error"
 
 
-def population_generate_random(P,size,income):
+def population_generate_random(P,size,income,age):
 	#P is population of parents
 	#size is size of each chromosome
 	population=[]
@@ -100,7 +125,7 @@ def population_generate_random(P,size,income):
 		chromosome=[]
 		while (True):
 			gene = choice(G.nodes())#random node
-			if minimuminc(gene,income)==False:
+			if minimuminc(gene,income)==False or ageconst(gene,age)==False:
 				continue
 			if gene not in chromosome:
 				chromosome.append(gene)
@@ -116,7 +141,7 @@ def population_generate_random(P,size,income):
 		print p
 	return population
 
-def population_generate_weighted(P,size,income):
+def population_generate_weighted(P,size,income,age):
 	sortednodes=sorted(G.nodes(), key= lambda node: G.node[node]['reach']) 
 	choices=[]
 	for n in sortednodes:
@@ -128,7 +153,7 @@ def population_generate_weighted(P,size,income):
 		chromosome=[]
 		while (True):
 			gene = weighted_choice(choices)#random node
-			if minimuminc(gene,income)==False:
+			if minimuminc(gene,income)==False or ageconst(gene,age)==False:
 				continue
 			# print G.node[gene]['reach']
 			if gene not in chromosome:
@@ -147,9 +172,9 @@ def population_generate_weighted(P,size,income):
 
 def replace(l, X, Y):
   for i,v in enumerate(l):
-     if v == X:
-        l.pop(i)
-        l.insert(i, Y)
+	 if v == X:
+		l.pop(i)
+		l.insert(i, Y)
 
 def pickparents(population):
 	parents=[]
@@ -166,7 +191,7 @@ def pickparents(population):
 			i=i+1
 	return parents
 
-def makechild(population, parents,income):
+def makechild(population, parents,income,age):
 	choices=[]
 	child=[]
 	size=len(parents[0])
@@ -180,7 +205,7 @@ def makechild(population, parents,income):
 		r=randint(1,100)
 		if r==1 or r==2 or r==3 or r==4 or r==5:
 			g=choice(G.nodes())
-			if minimuminc(g,income)==False:
+			if minimuminc(g,income)==False or ageconst(g,age)==False:
 				continue
 			print "Mutation"
 		if g not in child:
@@ -214,7 +239,7 @@ def makechild(population, parents,income):
 def minimuminc(site,inc):
 	#inc can take values 0,30,60 or 100. 0 means no restriction
 	# (0-30)(30-60)(60-100)(100+)
-	print G.node[site]
+	# print G.node[site]
 	if inc==0:
 		return True
 	if inc==30:
@@ -233,6 +258,17 @@ def minimuminc(site,inc):
 		else:
 			return False
 
+def ageconst(site,age):
+	#age can take values 1)18-24 2)25-34 3)35-44 4)45-54 5)55-64 6)65+ 
+	# 0 means no restriction
+	# print G.node[site]
+	if age==0:
+		return True
+	else:
+		if G.node[site]['alist'][age]>=100:
+			return True
+		else :
+			return False
 
 
 
@@ -243,26 +279,31 @@ def main():
 	# json.dump(d, open('force/force.json','w'))
 	# http_server.load_url('force/force.html')
 
-	# print '\n\nRandom\n\n'
-	# pop=population_generate_random(100,5,60)
-	# print '\n\nWeighted\n\n'
-	# # pop = population_generate_weighted(100,5)
+	psize=100
+	csize=5
+	inc=30
+	age=1
 
-	print minimuminc('google.com',30)
+	print '\n\nRandom\n\n'
+	pop=population_generate_random(psize,csize,inc,age)
+	print '\n\nWeighted\n\n'
+	# pop = population_generate_weighted(psize,csize,inc,age)
 
-	# fitnesscurve=[]
 
-	# for i in range(1,2000):
-	# 	print "\n\n", i, "\n\n"
-	# 	par= pickparents(pop)
-	# 	makechild(pop,par)
-	# 	sortedpop=sorted(pop, key= lambda ch: fitness(ch), reverse=True) 
-	# 	print "fittest: "
-	# 	print sortedpop[0], fitness(sortedpop[0])
-	# 	fitnesscurve.append((i,fitness(sortedpop[0])))
+	fitnesscurve=[]
+	
 
-	# plt.scatter(*zip(*fitnesscurve))
-	# plt.show()
+	for i in range(1,10):
+		print "\n\n", i, "\n\n"
+		par= pickparents(pop)
+		makechild(pop,par,inc,age)
+		sortedpop=sorted(pop, key= lambda ch: fitness(ch), reverse=True) 
+		print "fittest: "
+		print sortedpop[0], fitness(sortedpop[0])
+		fitnesscurve.append((i,fitness(sortedpop[0])))
+
+	plt.scatter(*zip(*fitnesscurve))
+	plt.show()
 	
 
 	
