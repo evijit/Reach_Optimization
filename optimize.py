@@ -1,10 +1,11 @@
 import networkx as nx
 from networkx.readwrite import json_graph
 import pickle
-from random import choice,uniform
+from random import choice,uniform,randint
 import http_server
 import json
 import math
+import matplotlib.pyplot as plt
 
 
 def prune(G):
@@ -140,6 +141,12 @@ def population_generate_weighted(P,size):
 		print p
 	return population
 
+def replace(l, X, Y):
+  for i,v in enumerate(l):
+     if v == X:
+        l.pop(i)
+        l.insert(i, Y)
+
 def pickparents(population):
 	parents=[]
 	choices=[]
@@ -155,6 +162,52 @@ def pickparents(population):
 			i=i+1
 	return parents
 
+def makechild(population, parents):
+	choices=[]
+	child=[]
+	size=len(parents[0])
+	sortedparents=sorted(parents, key= lambda ch: fitness(ch)) 
+	for ch in sortedparents:
+		choices.append((ch,fitness(ch)))
+	i=0
+	while i<size:
+		p=weighted_choice(choices)
+		g=choice(p)
+		r=randint(1,100)
+		if r==1 or r==2 or r==3 or r==4 or r==5:
+			g=choice(G.nodes())
+			print "Mutation"
+		if g not in child:
+			child.append(g)
+			i=i+1
+
+	child=tuple(child)
+
+	FP0=fitness(parents[0])
+	FP1=fitness(parents[1])
+	FC=fitness(child)
+
+	# print "\n\n\nCHILDREN\n\n\n"
+
+	print parents[0] , FP0
+	print parents[1] , FP1
+	print child, FC
+
+	if min(FP0,FP1,FC)==FP0:
+		print "replaced: " ,parents[0], FP0
+		replace(population,parents[0],child)
+	elif min(FP0,FP1,FC)==FP1:
+		print "replaced: " ,parents[1], FP1
+		replace(population,parents[1],child)
+	else:
+		print "No replacement"
+
+
+
+
+
+
+
 
 
 def main():
@@ -164,11 +217,23 @@ def main():
 	# http_server.load_url('force/force.html')
 
 	print '\n\nRandom\n\n'
-	population_generate_random(10,5)
+	pop=population_generate_random(100,5)
 	print '\n\nWeighted\n\n'
-	pop = population_generate_weighted(10,5)
+	# pop = population_generate_weighted(100,5)
 
-	print pickparents(pop)
+	fitnesscurve=[]
+
+	for i in range(1,2000):
+		print "\n\n", i, "\n\n"
+		par= pickparents(pop)
+		makechild(pop,par)
+		sortedpop=sorted(pop, key= lambda ch: fitness(ch), reverse=True) 
+		print "fittest: "
+		print sortedpop[0], fitness(sortedpop[0])
+		fitnesscurve.append((i,fitness(sortedpop[0])))
+
+	plt.scatter(*zip(*fitnesscurve))
+	plt.show()
 	
 
 	
