@@ -33,6 +33,11 @@ G = pickle.load(open('saved/graph50.txt'))
 for u,v,attr in G.edges(data=True):
 	G.edge[u][v]['neglog']= -1*math.log10(G.edge[u][v]['weight']) 
 
+A=open('allowed.txt')
+allowedlist=[]
+for w in A.readlines():
+	allowedlist.append(w.strip())
+
 prune(G)
 remove_isolated(G)
 
@@ -41,6 +46,12 @@ F=nx.floyd_warshall(G, weight='neglog')
 
 # print P
 
+
+def allowed(site):
+	if G.node[site]['label'] in allowedlist:
+		return True
+	else:
+		return False
 
 
 
@@ -139,6 +150,8 @@ def population_generate_random(P,size,income,age):
 		chromosome=[]
 		while (True):
 			gene = choice(G.nodes())#random node
+			if not allowed(gene):
+				continue
 			if minimuminc(gene,income)==False or ageconst(gene,age)==False:
 				continue
 			if gene not in chromosome:
@@ -167,6 +180,8 @@ def population_generate_weighted(P,size,income,age):
 		chromosome=[]
 		while (True):
 			gene = weighted_choice(choices)#random node
+			if not allowed(gene):
+				continue
 			if minimuminc(gene,income)==False or ageconst(gene,age)==False:
 				continue
 			# print G.node[gene]['reach']
@@ -220,6 +235,8 @@ def makechild(population, parents,income,age):
 		r=randint(1,100)
 		if r==1 or r==2 or r==3 or r==4 or r==5:
 			g=choice(G.nodes())
+			if not allowed(g):
+				continue
 			if minimuminc(g,income)==False or ageconst(g,age)==False:
 				continue
 			print "Mutation"
@@ -299,7 +316,7 @@ def main():
 	# http_server.load_url('force/force.html')
 
 	psize=50
-	csize=20
+	csize=5
 	inc=0
 	age=0
 
