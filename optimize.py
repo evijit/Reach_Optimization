@@ -28,7 +28,7 @@ def remove_isolated(G):
 		G.remove_node(i)
 
 
-G = pickle.load(open('saved/graph300.txt'))
+G = pickle.load(open('saved/graph50.txt'))
 
 for u,v,attr in G.edges(data=True):
 	G.edge[u][v]['neglog']= -1*math.log10(G.edge[u][v]['weight']) 
@@ -54,38 +54,52 @@ def U(n):
 	return G.node[n]['reach']*(world/100) 
 
 
+# def fitness(S):
+# 	#S is a chromosome
+# 	L=len(S)
+# 	outsum=0
+# 	for i in range(0,L):
+# 		allpaths=[]
+# 		for j in range(i+1,L):
+# 			path=nx.shortest_path(G, source=S[i], target=S[j], weight='neglog')
+# 			allpaths.append(path)
+		
+# 		delpaths=[]
+# 		# print "All", allpaths
+		
+# 		for a, b in combinations(allpaths, 2):
+# 			str1 = ''.join(a)
+# 			str2 = ''.join(b)
+# 			if str1 in str2:
+# 				delpaths.append(b)
+# 			elif str2 in str1:
+# 				delpaths.append(a)
+
+# 		for d in delpaths:
+# 			if d in allpaths:
+# 				allpaths.remove(d)
+
+# 		# print "Del", delpaths
+
+# 		insum=0
+# 		for p in allpaths:
+# 			l=len(p)
+# 			insum+= D(p[0],p[l-1])* min(U(p[0]),U(p[l-1]))
+# 		outsum+=U(S[i])-insum
+# 	return outsum
+
 def fitness(S):
-	#S is a chromosome
 	L=len(S)
 	outsum=0
-	for i in range(1,L):
+	for i in range(0,L):
 		allpaths=[]
-		for j in range(i+1,L):
-			path=nx.shortest_path(G, source=S[i], target=S[j], weight='neglog')
-			allpaths.append(path)
-		
-		delpaths=[]
-		# print "All", allpaths
-		
-		for a, b in combinations(allpaths, 2):
-			str1 = ''.join(a)
-			str2 = ''.join(b)
-			if str1 in str2:
-				delpaths.append(b)
-			elif str2 in str1:
-				delpaths.append(a)
-
-		for d in delpaths:
-			allpaths.remove(d)
-
-		# print "Del", delpaths
-
 		insum=0
-		for p in allpaths:
-			l=len(p)
-			insum+= D(p[0],p[l-1])* min(U(p[0]),U(p[l-1]))
+		for j in range(i+1,L):
+			insum+= D(S[i],S[j])* min(U(S[i]),U(S[j]))
 		outsum+=U(S[i])-insum
-	return outsum
+	return outsum		
+
+
 
 
 # def get_weight_product(path):
@@ -162,6 +176,7 @@ def population_generate_weighted(P,size,income,age):
 				break
 		chromosome=sorted(chromosome, key= lambda node: G.node[node]['reach']) 
 		ch=tuple(chromosome)
+		# ch.sort()
 		if ch not in population:
 			population.append(ch)
 			i=i+1
@@ -186,9 +201,9 @@ def pickparents(population):
 	i=0
 	while(i<2):
 		p=weighted_choice(choices)
-		if p not in parents:
-			parents.append(p)
-			i=i+1
+		# if p not in parents:
+		parents.append(p)
+		i=i+1
 	return parents
 
 def makechild(population, parents,income,age):
@@ -212,11 +227,15 @@ def makechild(population, parents,income,age):
 			child.append(g)
 			i=i+1
 
+	# child.sort()
 	child=tuple(child)
 
 	FP0=fitness(parents[0])
 	FP1=fitness(parents[1])
 	FC=fitness(child)
+
+	if child==parents[0] and child==parents[1]:
+		return
 
 	# print "\n\n\nCHILDREN\n\n\n"
 
@@ -279,10 +298,10 @@ def main():
 	# json.dump(d, open('force/force.json','w'))
 	# http_server.load_url('force/force.html')
 
-	psize=100
-	csize=5
-	inc=30
-	age=1
+	psize=50
+	csize=20
+	inc=0
+	age=0
 
 	print '\n\nRandom\n\n'
 	pop=population_generate_random(psize,csize,inc,age)
@@ -293,7 +312,9 @@ def main():
 	fitnesscurve=[]
 	
 
-	for i in range(1,10):
+	for i in range(1,5000):
+		# if len(set(pop))==1:
+		# 	break
 		print "\n\n", i, "\n\n"
 		par= pickparents(pop)
 		makechild(pop,par,inc,age)
@@ -301,6 +322,7 @@ def main():
 		print "fittest: "
 		print sortedpop[0], fitness(sortedpop[0])
 		fitnesscurve.append((i,fitness(sortedpop[0])))
+		
 
 	plt.scatter(*zip(*fitnesscurve))
 	plt.show()
