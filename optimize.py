@@ -65,50 +65,50 @@ def U(n):
 	return G.node[n]['reach']*(world/100) 
 
 
-# def fitness(S):
-# 	#S is a chromosome
-# 	L=len(S)
-# 	outsum=0
-# 	for i in range(0,L):
-# 		allpaths=[]
-# 		for j in range(i+1,L):
-# 			path=nx.shortest_path(G, source=S[i], target=S[j], weight='neglog')
-# 			allpaths.append(path)
-		
-# 		delpaths=[]
-# 		# print "All", allpaths
-		
-# 		for a, b in combinations(allpaths, 2):
-# 			str1 = ''.join(a)
-# 			str2 = ''.join(b)
-# 			if str1 in str2:
-# 				delpaths.append(b)
-# 			elif str2 in str1:
-# 				delpaths.append(a)
-
-# 		for d in delpaths:
-# 			if d in allpaths:
-# 				allpaths.remove(d)
-
-# 		# print "Del", delpaths
-
-# 		insum=0
-# 		for p in allpaths:
-# 			l=len(p)
-# 			insum+= D(p[0],p[l-1])* min(U(p[0]),U(p[l-1]))
-# 		outsum+=U(S[i])-insum
-# 	return outsum
-
-def fitness(S):
+def fitness(S): #PATH
+	#S is a chromosome
 	L=len(S)
 	outsum=0
 	for i in range(0,L):
 		allpaths=[]
-		insum=0
 		for j in range(i+1,L):
-			insum+= D(S[i],S[j])* min(U(S[i]),U(S[j]))
+			path=nx.shortest_path(G, source=S[i], target=S[j], weight='neglog')
+			allpaths.append(path)
+		
+		delpaths=[]
+		# print "All", allpaths
+		
+		for a, b in combinations(allpaths, 2):
+			str1 = ''.join(a)
+			str2 = ''.join(b)
+			if str1 in str2:
+				delpaths.append(b)
+			elif str2 in str1:
+				delpaths.append(a)
+
+		for d in delpaths:
+			if d in allpaths:
+				allpaths.remove(d)
+
+		# print "Del", delpaths
+
+		insum=0
+		for p in allpaths:
+			l=len(p)
+			insum+= D(p[0],p[l-1])* min(U(p[0]),U(p[l-1]))
 		outsum+=U(S[i])-insum
-	return outsum		
+	return outsum
+
+# def fitness(S): #SET
+# 	L=len(S)
+# 	outsum=0
+# 	for i in range(0,L):
+# 		allpaths=[]
+# 		insum=0
+# 		for j in range(i+1,L):
+# 			insum+= D(S[i],S[j])* min(U(S[i]),U(S[j]))
+# 		outsum+=U(S[i])-insum
+# 	return outsum		
 
 
 
@@ -329,7 +329,7 @@ def main():
 	fitnesscurve=[]
 	
 
-	for i in range(1,5000):
+	for i in range(1,100): #ITERATIONS
 		# if len(set(pop))==1:
 		# 	break
 		print "\n\n", i, "\n\n"
