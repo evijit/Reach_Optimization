@@ -48,7 +48,7 @@ F=nx.floyd_warshall(G, weight='neglog')
 
 
 def allowed(site):
-	if G.node[site]['label'] in allowedlist:
+	if str(site) in allowedlist:
 		return True
 	else:
 		return False
