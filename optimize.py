@@ -105,13 +105,15 @@ def fitness(S): #PATH
 # def fitness(S): #SET
 # 	L=len(S)
 # 	outsum=0
+#   overlap=0
 # 	for i in range(0,L):
 # 		allpaths=[]
 # 		insum=0
 # 		for j in range(i+1,L):
 # 			insum+= D(S[i],S[j])* min(U(S[i]),U(S[j]))
 # 		outsum+=U(S[i])-insum
-# 	return (outsum,insum)		
+# 	  overlap+=insum
+# 	return (outsum,overlap)		
 
 
 
