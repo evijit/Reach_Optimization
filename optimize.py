@@ -69,6 +69,7 @@ def fitness(S): #PATH
 	#S is a chromosome
 	L=len(S)
 	outsum=0
+	overlap=0
 	for i in range(0,L):
 		allpaths=[]
 		for j in range(i+1,L):
@@ -97,7 +98,9 @@ def fitness(S): #PATH
 			l=len(p)
 			insum+= D(p[0],p[l-1])* min(U(p[0]),U(p[l-1]))
 		outsum+=U(S[i])-insum
-	return outsum
+		overlap+=insum
+		# print "Fitness ", outsum, " Overlap ", insum
+	return (outsum,overlap)
 
 # def fitness(S): #SET
 # 	L=len(S)
@@ -108,7 +111,7 @@ def fitness(S): #PATH
 # 		for j in range(i+1,L):
 # 			insum+= D(S[i],S[j])* min(U(S[i]),U(S[j]))
 # 		outsum+=U(S[i])-insum
-# 	return outsum		
+# 	return (outsum,insum)		
 
 
 
@@ -209,9 +212,9 @@ def replace(l, X, Y):
 def pickparents(population):
 	parents=[]
 	choices=[]
-	sortedpopulation=sorted(population, key= lambda ch: fitness(ch)) 
+	sortedpopulation=sorted(population, key= lambda ch: fitness(ch)[0]) 
 	for ch in sortedpopulation:
-		choices.append((ch,fitness(ch)))
+		choices.append((ch,fitness(ch)[0]))
 
 	i=0
 	while(i<2):
@@ -225,9 +228,9 @@ def makechild(population, parents,income,age):
 	choices=[]
 	child=[]
 	size=len(parents[0])
-	sortedparents=sorted(parents, key= lambda ch: fitness(ch)) 
+	sortedparents=sorted(parents, key= lambda ch: fitness(ch)[0]) 
 	for ch in sortedparents:
-		choices.append((ch,fitness(ch)))
+		choices.append((ch,fitness(ch)[0]))
 	i=0
 	while i<size:
 		p=weighted_choice(choices)
@@ -256,15 +259,15 @@ def makechild(population, parents,income,age):
 
 	# print "\n\n\nCHILDREN\n\n\n"
 
-	print parents[0] , FP0
-	print parents[1] , FP1
-	print child, FC
+	print parents[0] , " Fitness: ", FP0[0], " Overlap: ", FP0[1]
+	print parents[1] , " Fitness: ", FP1[0], " Overlap: ", FP1[1]
+	print child, " Fitness: ", FC[0], " Overlap: ", FC[1]
 
-	if min(FP0,FP1,FC)==FP0:
-		print "replaced: " ,parents[0], FP0
+	if min(FP0[0],FP1[0],FC[0])==FP0[0]:
+		print "replaced: " ,parents[0]
 		replace(population,parents[0],child)
-	elif min(FP0,FP1,FC)==FP1:
-		print "replaced: " ,parents[1], FP1
+	elif min(FP0[0],FP1[0],FC[0])==FP1[0]:
+		print "replaced: " ,parents[1]
 		replace(population,parents[1],child)
 	else:
 		print "No replacement"
@@ -335,10 +338,11 @@ def main():
 		print "\n\n", i, "\n\n"
 		par= pickparents(pop)
 		makechild(pop,par,inc,age)
-		sortedpop=sorted(pop, key= lambda ch: fitness(ch), reverse=True) 
+		sortedpop=sorted(pop, key= lambda ch: fitness(ch)[0], reverse=True) 
 		print "fittest: "
-		print sortedpop[0], fitness(sortedpop[0])
-		fitnesscurve.append((i,fitness(sortedpop[0])))
+		F=fitness(sortedpop[0])
+		print sortedpop[0], "Fitness: ", F[0], "Overlap ", F[1]
+		fitnesscurve.append((i,fitness(sortedpop[0])[0]))
 		
 
 	plt.scatter(*zip(*fitnesscurve))
