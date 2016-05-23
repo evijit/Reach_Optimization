@@ -1,0 +1,16 @@
+language: python
+python:
+  - "2.7"
+# command to install dependencies
+install: "pip install --user -r requirements.txt"
+# command to run tests
+script: 
+  - python optimize.py
+  - zip -r results.zip data
+deploy:
+  provider: releases
+  api_key: $API_KEY
+  file: results.zip
+  skip_cleanup: true
+  on:
+    tags: true
