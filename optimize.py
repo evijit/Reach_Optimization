@@ -6,6 +6,8 @@ import http_server
 import json
 import math
 from itertools import combinations
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 
