@@ -105,7 +105,7 @@ def fitness(S): #PATH
 # def fitness(S): #SET
 # 	L=len(S)
 # 	outsum=0
-#   overlap=0
+#	overlap=0
 # 	for i in range(0,L):
 # 		allpaths=[]
 # 		insum=0
@@ -226,7 +226,7 @@ def pickparents(population):
 		i=i+1
 	return parents
 
-def makechild(population, parents,income,age):
+def makechild(population, parents,income,age,mut):
 	choices=[]
 	child=[]
 	size=len(parents[0])
@@ -238,13 +238,30 @@ def makechild(population, parents,income,age):
 		p=weighted_choice(choices)
 		g=choice(p)
 		r=randint(1,100)
-		if r==1 or r==2 or r==3 or r==4 or r==5:
-			g=choice(G.nodes())
-			if not allowed(g):
-				continue
-			if minimuminc(g,income)==False or ageconst(g,age)==False:
-				continue
-			print "Mutation"
+		if mut==5:
+			if r==1 or r==2 or r==3 or r==4 or r==5:
+				g=choice(G.nodes())
+				if not allowed(g):
+					continue
+				if minimuminc(g,income)==False or ageconst(g,age)==False:
+					continue
+				print "Mutation"
+		if mut==3:
+			if r==1 or r==2 or r==3:
+				g=choice(G.nodes())
+				if not allowed(g):
+					continue
+				if minimuminc(g,income)==False or ageconst(g,age)==False:
+					continue
+				print "Mutation"
+		if mut==1:
+			if r==1:
+				g=choice(G.nodes())
+				if not allowed(g):
+					continue
+				if minimuminc(g,income)==False or ageconst(g,age)==False:
+					continue
+				print "Mutation"
 		if g not in child:
 			child.append(g)
 			i=i+1
@@ -320,35 +337,59 @@ def main():
 	# json.dump(d, open('force/force.json','w'))
 	# http_server.load_url('force/force.html')
 
-	psize=50
-	csize=5
-	inc=0
-	age=0
+	infile=open('input.txt','r')
+	outfile=open('data/output.txt','w')
+	serial=0
+	for line in infile.readlines():
+		serial+=1
+		param=line.split()
 
-	print '\n\nRandom\n\n'
-	pop=population_generate_random(psize,csize,inc,age)
-	print '\n\nWeighted\n\n'
-	# pop = population_generate_weighted(psize,csize,inc,age)
+		psize=int(param[0])
+		csize=int(param[1])
+		inc=int(param[2])
+		age=int(param[3])
+		mut=int(param[4])
+		probselect=int(param[5])#0 means random population, 1 means weighted
+		iteration=int(param[6])
+		#INPUT FORMAT: PopulationSize  ChromosomeSize  Income Age Mutation Probselect Iteration
+
+		pop=[]
+		if probselect == 0:
+			print '\n\nRandom\n\n'
+			pop=population_generate_random(psize,csize,inc,age)
+		if probselect == 1:
+			print '\n\nWeighted\n\n'
+			pop = population_generate_weighted(psize,csize,inc,age)
 
 
-	fitnesscurve=[]
-	
-
-	for i in range(1,100): #ITERATIONS
-		# if len(set(pop))==1:
-		# 	break
-		print "\n\n", i, "\n\n"
-		par= pickparents(pop)
-		makechild(pop,par,inc,age)
-		sortedpop=sorted(pop, key= lambda ch: fitness(ch)[0], reverse=True) 
-		print "fittest: "
-		F=fitness(sortedpop[0])
-		print sortedpop[0], "Fitness: ", F[0], "Overlap ", F[1]
-		fitnesscurve.append((i,fitness(sortedpop[0])[0]))
+		fitnesscurve=[]
 		
 
-	plt.scatter(*zip(*fitnesscurve))
-	plt.show()
+		for i in range(1,iteration): #ITERATIONS
+			# if len(set(pop))==1:
+			# 	break
+			print "\n\n", i, "\n\n"
+			par= pickparents(pop)
+			makechild(pop,par,inc,age,mut)
+			sortedpop=sorted(pop, key= lambda ch: fitness(ch)[0], reverse=True) 
+			print "fittest: "
+			F=fitness(sortedpop[0])
+			print sortedpop[0], "Fitness: ", F[0], "Overlap ", F[1]
+			fitnesscurve.append((i,fitness(sortedpop[0])[0]))
+		
+		sortedpop=sorted(pop, key= lambda ch: fitness(ch)[0], reverse=True) 
+		F=fitness(sortedpop[0])
+		outfile.write(str(serial)+" --> "+"Pop size: "+ str(psize)+ " Chromosome size: "+ str(csize)+ " Income: "+ str(inc)+ " Age: "+ str(age)+ " Mutation rate: "+ str(mut)+ 
+			" Probalistic selection : "+ str(probselect)+ " Iterations: "+ str(iteration)+"\n")
+		outfile.write(" ,".join(sortedpop[0])+ " Fitness: " + str(F[0])+ " Overlap " + str(F[1])+'\n\n')
+
+
+		plt.scatter(*zip(*fitnesscurve))
+		# plt.show()
+		plt.savefig('data/'+str(serial)+'.png', bbox_inches='tight')
+
+	outfile.close()
+
 	
 
 	
