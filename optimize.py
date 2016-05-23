@@ -28,7 +28,7 @@ def remove_isolated(G):
 		G.remove_node(i)
 
 
-G = pickle.load(open('saved/graph50.txt'))
+G = pickle.load(open('saved/graph300.txt'))
 
 for u,v,attr in G.edges(data=True):
 	G.edge[u][v]['neglog']= -1*math.log10(G.edge[u][v]['weight']) 
@@ -101,39 +101,6 @@ def fitness(S): #PATH
 		overlap+=insum
 		# print "Fitness ", outsum, " Overlap ", insum
 	return (outsum,overlap)
-
-# def fitness(S): #SET
-# 	L=len(S)
-# 	outsum=0
-#	overlap=0
-# 	for i in range(0,L):
-# 		allpaths=[]
-# 		insum=0
-# 		for j in range(i+1,L):
-# 			insum+= D(S[i],S[j])* min(U(S[i]),U(S[j]))
-# 		outsum+=U(S[i])-insum
-# 	  overlap+=insum
-# 	return (outsum,overlap)		
-
-
-
-
-# def get_weight_product(path):
-#     prod = 1
-#     weight='weight'
-#     if len(path) > 1:
-#         for i in range(len(path) - 1):
-#             u = path[i]
-#             v = path[i + 1]
-			
-#             prod *= G.edge[u][v].get(weight, 1)
-	
-#     return prod  
-
-
-# def maxpath(source,dest):
-# 	max_path = max((path for path in nx.all_simple_paths(G, source, dest)), key=lambda path: get_weight_product(path))
-# 	return max_path
 
 def weighted_choice(choices):
    total = sum(w for c, w in choices)
@@ -266,7 +233,6 @@ def makechild(population, parents,income,age,mut):
 			child.append(g)
 			i=i+1
 
-	# child.sort()
 	child=tuple(child)
 
 	FP0=fitness(parents[0])
@@ -275,8 +241,6 @@ def makechild(population, parents,income,age,mut):
 
 	if child==parents[0] and child==parents[1]:
 		return
-
-	# print "\n\n\nCHILDREN\n\n\n"
 
 	print parents[0] , " Fitness: ", FP0[0], " Overlap: ", FP0[1]
 	print parents[1] , " Fitness: ", FP1[0], " Overlap: ", FP1[1]
@@ -297,7 +261,6 @@ def makechild(population, parents,income,age,mut):
 def minimuminc(site,inc):
 	#inc can take values 0,30,60 or 100. 0 means no restriction
 	# (0-30)(30-60)(60-100)(100+)
-	# print G.node[site]
 	if inc==0:
 		return True
 	if inc==30:
@@ -319,7 +282,6 @@ def minimuminc(site,inc):
 def ageconst(site,age):
 	#age can take values 1)18-24 2)25-34 3)35-44 4)45-54 5)55-64 6)65+ 
 	# 0 means no restriction
-	# print G.node[site]
 	if age==0:
 		return True
 	else:
@@ -366,8 +328,6 @@ def main():
 		
 
 		for i in range(1,iteration): #ITERATIONS
-			# if len(set(pop))==1:
-			# 	break
 			print "\n\n", i, "\n\n"
 			par= pickparents(pop)
 			makechild(pop,par,inc,age,mut)
