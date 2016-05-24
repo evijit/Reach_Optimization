@@ -9,6 +9,8 @@ from itertools import combinations
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+import pyexcel
+
 
 
 def prune(G):
@@ -302,7 +304,7 @@ def main():
 	# http_server.load_url('force/force.html')
 
 	infile=open('input.txt','r')
-	outfile=open('data/output.txt','w')
+	outfile=open('newdata/output.txt','w')
 	serial=0
 	for line in infile.readlines():
 		serial+=1
@@ -327,6 +329,8 @@ def main():
 
 
 		fitnesscurve=[]
+		data=[]
+		data.append(['Chromosome', 'Fitness','Overlap'])
 		
 
 		for i in range(1,iteration): #ITERATIONS
@@ -337,6 +341,7 @@ def main():
 			print "fittest: "
 			F=fitness(sortedpop[0])
 			print sortedpop[0], "Fitness: ", F[0], "Overlap ", F[1]
+			data.append([sortedpop[0], F[0], F[1]])
 			fitnesscurve.append((i,fitness(sortedpop[0])[0]))
 		
 		sortedpop=sorted(pop, key= lambda ch: fitness(ch)[0], reverse=True) 
@@ -344,11 +349,15 @@ def main():
 		outfile.write(str(serial)+" --> "+"Pop size: "+ str(psize)+ " Chromosome size: "+ str(csize)+ " Income: "+ str(inc)+ " Age: "+ str(age)+ " Mutation rate: "+ str(mut)+ 
 			" Probalistic selection : "+ str(probselect)+ " Iterations: "+ str(iteration)+"\n")
 		outfile.write(" ,".join(sortedpop[0])+ " Fitness: " + str(F[0])+ " Overlap " + str(F[1])+'\n\n')
+		data.append([sortedpop[0], F[0], F[1]])
+
+		pyexcel.save_as(array = data, dest_file_name = 'newdata/'+str(serial)+'.csv')
 
 
+		plt.clf()
 		plt.scatter(*zip(*fitnesscurve))
 		# plt.show()
-		plt.savefig('data/'+str(serial)+'.png', bbox_inches='tight')
+		plt.savefig('newdata/'+str(serial)+'.png', bbox_inches='tight')
 
 	outfile.close()
 
