@@ -337,19 +337,19 @@ def main():
 			print "\n\n", i, "\n\n"
 			par= pickparents(pop)
 			makechild(pop,par,inc,age,mut)
-			sortedpop=sorted(pop, key= lambda ch: fitness(ch)[0], reverse=True) 
+			maxpop=max(pop, key= lambda ch: fitness(ch)[0]) 
 			print "fittest: "
-			F=fitness(sortedpop[0])
-			print sortedpop[0], "Fitness: ", F[0], "Overlap ", F[1]
-			data.append([sortedpop[0], F[0], F[1]])
-			fitnesscurve.append((i,fitness(sortedpop[0])[0]))
+			F=fitness(maxpop)
+			print maxpop, "Fitness: ", F[0], "Overlap ", F[1]
+			data.append([maxpop, F[0], F[1]])
+			fitnesscurve.append((i,fitness(maxpop)[0]))
 		
-		sortedpop=sorted(pop, key= lambda ch: fitness(ch)[0], reverse=True) 
-		F=fitness(sortedpop[0])
+		maxpop=max(pop, key= lambda ch: fitness(ch)[0]) 
+		F=fitness(maxpop)
 		outfile.write(str(serial)+" --> "+"Pop size: "+ str(psize)+ " Chromosome size: "+ str(csize)+ " Income: "+ str(inc)+ " Age: "+ str(age)+ " Mutation rate: "+ str(mut)+ 
 			" Probalistic selection : "+ str(probselect)+ " Iterations: "+ str(iteration)+"\n")
-		outfile.write(" ,".join(sortedpop[0])+ " Fitness: " + str(F[0])+ " Overlap " + str(F[1])+'\n\n')
-		data.append([sortedpop[0], F[0], F[1]])
+		outfile.write(" ,".join(maxpop)+ " Fitness: " + str(F[0])+ " Overlap " + str(F[1])+'\n\n')
+		data.append([maxpop, F[0], F[1]])
 
 		pyexcel.save_as(array = data, dest_file_name = 'newdata/'+str(serial)+'.csv')
 
