@@ -1,3 +1,0 @@
-1 --> Pop size: 50 Chromosome size: 5 Income: 0 Age: 0 Mutation rate: 3 Probalistic selection : 0 Iterations: 20
-pinterest.com ,cnn.com ,weibo.com ,live.com ,twitter.com Fitness: 596752473.168 Overlap 7141526.832
-
