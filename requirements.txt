@@ -2,3 +2,5 @@ networkx
 requests
 Flask-Session
 matplotlib
+flask
+gunicorn
