@@ -6,7 +6,6 @@ import http_server
 import json
 import math
 from itertools import combinations
-import pyexcel
 
 class Optimize:
 
@@ -366,7 +365,6 @@ class Optimize:
 			print sortedpop[0], "self.fitness: ", F[0], "Overlap ", F[1]
 			data.append([sortedpop[0], F[0], F[1]])
 			
-		pyexcel.save_as(array = data, dest_file_name = 'results/'+'fulldata.csv')
 		return data
 
 		
