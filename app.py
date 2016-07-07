@@ -66,7 +66,7 @@ def result():
 	plt.autoscale()
 	f.tight_layout()
 	plt.gcf().subplots_adjust(left=0.2)
-	pos=nx.spring_layout(G)
+	pos=nx.spectral_layout(G)
 
 	nx.draw_networkx_nodes(G,pos,nodelist=normalnode, node_color='r', node_size=50, alpha=0.8)
 	nx.draw_networkx_nodes(G,pos, nodelist=ans, node_color='b', node_size=100, alpha=1.0)
