@@ -23,7 +23,7 @@ G=nx.Graph()
 browser = RoboBrowser(history=True,parser="html.parser")
 driver = webdriver.Chrome()
 visited=[]
-maxnodes=30
+maxnodes=10
 
 
 def login():

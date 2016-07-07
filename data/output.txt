@@ -1,3 +1,0 @@
-1 --> Pop size: 50 Chromosome size: 5 Income: 0 Age: 0 Mutation rate: 3 Probalistic selection : 0 Iterations: 10
-couponaholic.net ,mingpao.com ,aol.co.uk ,msn.com ,youtube.com Fitness: 1202971485.2 Overlap 6484514.79569
-
