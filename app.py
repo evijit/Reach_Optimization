@@ -65,10 +65,14 @@ def result():
 	f=plt.figure()
 	pos=nx.spring_layout(G)
 	plt.axis('off')
+	f.axes.get_xaxis().set_visible(False)
+	f.axes.get_yaxis().set_visible(False)
+	plt.autoscale()
+	f.tight_layout()
 
 
-	nx.draw_networkx_nodes(G,pos,nodelist=normalnode, node_color='r', node_size=50, alpha=0.8,labels=True)
-	nx.draw_networkx_nodes(G,pos, nodelist=ans, node_color='b', node_size=100, alpha=1.0,labels=True)
+	nx.draw_networkx_nodes(G,pos,nodelist=normalnode, node_color='r', node_size=50, alpha=0.8,with_labels=True)
+	nx.draw_networkx_nodes(G,pos, nodelist=ans, node_color='b', node_size=100, alpha=1.0,with_labels=True)
 	nx.draw_networkx_edges(G,pos,width=1.0,alpha=0.5)
 
 	graph=mpld3.fig_to_html(f)
