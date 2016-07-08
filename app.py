@@ -67,8 +67,8 @@ def result():
 	plt.axis('off')
 
 
-	nx.draw_networkx_nodes(G,pos,nodelist=normalnode, node_color='r', node_size=50, alpha=0.8)
-	nx.draw_networkx_nodes(G,pos, nodelist=ans, node_color='b', node_size=100, alpha=1.0)
+	nx.draw_networkx_nodes(G,pos,nodelist=normalnode, node_color='r', node_size=50, alpha=0.8,labels=True)
+	nx.draw_networkx_nodes(G,pos, nodelist=ans, node_color='b', node_size=100, alpha=1.0,labels=True)
 	nx.draw_networkx_edges(G,pos,width=1.0,alpha=0.5)
 
 	graph=mpld3.fig_to_html(f)
