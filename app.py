@@ -1,5 +1,5 @@
 from flask import Flask, render_template,url_for,request,session,redirect
-from flask.ext.session import Session
+from flask_session import Session
 from optimize import Optimize
 import pickle
 import networkx as nx
