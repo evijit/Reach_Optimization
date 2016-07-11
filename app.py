@@ -64,11 +64,9 @@ def result():
 
 	f=plt.figure()
 	pos=nx.spring_layout(G)
-	plt.axis('off')
-	f.axes.get_xaxis().set_visible(False)
-	f.axes.get_yaxis().set_visible(False)
 	plt.autoscale()
 	f.tight_layout()
+	plt.gcf().subplots_adjust(left=0.2)
 
 
 	nx.draw_networkx_nodes(G,pos,nodelist=normalnode, node_color='r', node_size=50, alpha=0.8,with_labels=True)
