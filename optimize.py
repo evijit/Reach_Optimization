@@ -327,9 +327,10 @@ class Optimize:
 		Optimize.G = pickle.load(open('saved/graph300.txt'))
 		self.prune(Optimize.G)
 		self.remove_isolated(Optimize.G)
-		Optimize.F=nx.floyd_warshall(Optimize.G, weight='neglog')
 		for u,v,attr in Optimize.G.edges(data=True):
 			Optimize.G.edge[u][v]['neglog']= -1*math.log10(Optimize.G.edge[u][v]['weight']) 
+		Optimize.F=nx.floyd_warshall(Optimize.G, weight='neglog')
+
 
 
 
