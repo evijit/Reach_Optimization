@@ -5,3 +5,4 @@ matplotlib
 flask
 gunicorn
 mpld3
+bokeh
