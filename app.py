@@ -4,7 +4,6 @@ from optimize import Optimize
 import pickle
 import networkx as nx
 import matplotlib
-from bokeh import mpl
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt,mpld3
 
@@ -75,8 +74,7 @@ def result():
 	nx.draw_networkx_edges(G,pos,width=1.0,alpha=0.5)
 
 
-	#graph=mpld3.fig_to_html(f)
-	graph=mpl.to_bokeh(f)
+	graph=mpld3.fig_to_html(f)
 
 	fitnesscurve=[]
 	for i in range(0,int(iteration)):
@@ -88,9 +86,7 @@ def result():
 	plt.gcf().subplots_adjust(left=0.2)
 	plt.clf()
 	plt.scatter(*zip(*fitnesscurve))
-	#chart=mpld3.fig_to_html(f2)
-	chart = mpl.to_bokeh(f2)
-
+	chart=mpld3.fig_to_html(f2)
 
 
 
