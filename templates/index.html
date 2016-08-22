@@ -83,8 +83,9 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                <p>Choose the initial parameters:</p>
+                
                 <form name="index_post" id="index_post" action="index_post" method="POST" novalidate>
+                <p>Input parameters:</p>
                     <!-- <div class="row control-group">
                         <div class="form-group col-xs-12 floating-label-form-group controls">
                             <label>Name</label>
@@ -92,20 +93,10 @@
                             <p class="help-block text-danger"></p>
                         </div>
                     </div> --> 
+                   
                     <div class="row control-group">
                         <div class="form-group col-xs-12">
-                            <label>Population Size</label>
-                                <select name="psize" class="form-control">
-                                  <option value="50">50</option>
-                                  <option value="100">100</option>
-                                  <option value="150">150</option>
-                                </select>
-                            <p class="help-block text-danger"></p>
-                        </div>
-                    </div>
-                    <div class="row control-group">
-                        <div class="form-group col-xs-12">
-                            <label>Chromosome Size (Size of set) </label>
+                            <label>Number of Target Websites </label>
                                 <select name="csize" class="form-control">
                                   <option value="5">5</option>
                                   <option value="8">8</option>
@@ -142,6 +133,28 @@
                             <p class="help-block text-danger"></p>
                         </div>
                     </div>
+
+                     <div class="row control-group">
+                        <div class="form-group col-xs-12">
+                            <label>Budget (in $)</label>
+                            <input type="number" name="budget" class="form-control">
+                            <p class="help-block text-danger"></p>
+                        </div>
+                    </div> 
+
+                    <p>Optimization parameters:</p>
+
+                     <div class="row control-group">
+                        <div class="form-group col-xs-12">
+                            <label>Population Size</label>
+                                <select name="psize" class="form-control">
+                                  <option value="50">50</option>
+                                  <option value="100">100</option>
+                                  <option value="150">150</option>
+                                </select>
+                            <p class="help-block text-danger"></p>
+                        </div>
+                    </div>
                     <div class="row control-group">
                         <div class="form-group col-xs-12">
                             <label>Mutation</label>
@@ -167,13 +180,6 @@
                         <div class="form-group col-xs-12">
                             <label>Number of Iterations</label>
                             <input type="number" name="iteration" class="form-control">
-                            <p class="help-block text-danger"></p>
-                        </div>
-                    </div> 
-                     <div class="row control-group">
-                        <div class="form-group col-xs-12">
-                            <label>Budget (in $)</label>
-                            <input type="number" name="budget" class="form-control">
                             <p class="help-block text-danger"></p>
                         </div>
                     </div> 
